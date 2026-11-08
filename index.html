@@ -1,0 +1,457 @@
+<title>AYZA POS Case Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Layout: a till roll read top to bottom — masthead, three plates, engineering
+   notes in a label/body two-column rhythm, spec table, contact. */
+:root {
+  --paper:   #F4F6FA;
+  --card:    #FFFFFF;
+  --ink:     #0C2340;
+  --ink-2:   #42566F;
+  --rule:    #D7DEE8;
+  --accent:  #B64B00;
+  --good:    #0B6E4F;
+
+  --display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --body:    'Source Sans 3', -apple-system, 'Segoe UI', sans-serif;
+  --mono:    'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0A1829; --card: #10243C; --ink: #E8EEF6; --ink-2: #93A8C1;
+    --rule: #22395420; --rule: #22394F; --accent: #FF9B4A; --good: #4CC79B;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0A1829; --card: #10243C; --ink: #E8EEF6; --ink-2: #93A8C1;
+  --rule: #22394F; --accent: #FF9B4A; --good: #4CC79B;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16.5px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap {
+  max-width: 940px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- masthead ---------- */
+.mast { padding-block: 56px 36px; }
+.brandline {
+  display: flex; align-items: center; gap: 11px;
+  font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+  letter-spacing: 1.6px; text-transform: uppercase; color: var(--accent);
+}
+.slash { color: var(--accent); font-weight: 600; letter-spacing: -1px; }
+h1 {
+  font-size: clamp(38px, 7.2vw, 66px);
+  font-weight: 800; line-height: 1.02; letter-spacing: -2px;
+  margin-top: 18px;
+}
+.thesis {
+  font-size: clamp(17px, 2.4vw, 21px); line-height: 1.5;
+  color: var(--ink-2); max-width: 30em; margin-top: 18px;
+}
+.facts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px; background: var(--rule);
+  border: 1px solid var(--rule); border-radius: 10px; overflow: hidden;
+  margin-top: 34px;
+}
+.fact { background: var(--card); padding: 14px 16px; }
+.fact dt {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--ink-2);
+}
+.fact dd { margin: 5px 0 0; font-weight: 600; font-size: 14.5px; }
+
+/* ---------- tear rule ---------- */
+.tear {
+  border: 0; border-top: 1.5px dashed var(--rule);
+  margin-block: 54px;
+}
+
+/* ---------- plates ---------- */
+.plate { margin-block: 44px; }
+.plate figure { margin: 0; }
+.shot {
+  display: block; width: 100%; max-width: 100%; height: auto;
+  border: 1px solid var(--rule); border-radius: 12px;
+  background: var(--card);
+}
+.plate figcaption {
+  display: grid; grid-template-columns: 112px 1fr; gap: 18px;
+  margin-top: 16px; align-items: start;
+}
+.plate .tag {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: uppercase; color: var(--accent);
+  padding-top: 3px;
+}
+.plate .cap { color: var(--ink-2); font-size: 15px; min-width: 0; }
+.plate .cap strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- notes ---------- */
+h2 {
+  font-size: clamp(24px, 3.6vw, 32px); font-weight: 700; letter-spacing: -0.8px;
+  margin-bottom: 26px;
+}
+.note {
+  display: grid; grid-template-columns: 180px 1fr; gap: 20px;
+  padding-block: 20px; border-top: 1px solid var(--rule);
+}
+.note:last-of-type { border-bottom: 1px solid var(--rule); }
+.note h3 {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 1.1px; text-transform: uppercase; color: var(--ink-2);
+  padding-top: 4px;
+}
+.note div { min-width: 0; }
+.note p + p { margin-top: 10px; }
+code {
+  font-family: var(--mono); font-size: 0.88em;
+  background: color-mix(in srgb, var(--accent) 11%, transparent);
+  color: var(--accent); padding: 1px 5px; border-radius: 4px;
+}
+
+/* ---------- stack ---------- */
+.stack { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+.chip {
+  font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+  padding: 5px 10px; border: 1px solid var(--rule); border-radius: 20px;
+  background: var(--card); color: var(--ink-2);
+}
+
+/* ---------- status ---------- */
+.status { display: grid; gap: 10px; margin-top: 4px; }
+.status li { display: flex; gap: 11px; align-items: baseline; }
+.status .mark {
+  font-family: var(--mono); font-size: 12px; font-weight: 600;
+  color: var(--good); flex: none; width: 62px;
+}
+.status .mark.open { color: var(--accent); }
+
+/* ---------- contact ---------- */
+.contact {
+  background: var(--card); border: 1px solid var(--rule); border-radius: 12px;
+  padding: 24px; margin-block: 44px 64px;
+  display: grid; gap: 16px;
+}
+.contact h2 { margin: 0; font-size: 20px; }
+.lines { display: grid; gap: 9px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.row .k {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.1px;
+  text-transform: uppercase; color: var(--ink-2); width: 72px; flex: none;
+}
+.row .v { font-family: var(--mono); font-size: 13.5px; word-break: break-all; min-width: 0; }
+.row a { color: var(--accent); }
+button.copy {
+  font-family: var(--mono); font-size: 11px; cursor: pointer;
+  padding: 3px 9px; border: 1px solid var(--rule); border-radius: 15px;
+  background: transparent; color: var(--ink-2);
+}
+button.copy:hover { border-color: var(--accent); color: var(--accent); }
+button.copy:focus-visible,
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+ul { margin: 0; padding: 0; list-style: none; }
+
+@media (max-width: 620px) {
+  .plate figcaption, .note { grid-template-columns: 1fr; gap: 8px; }
+  .note h3 { padding-top: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="brandline"><span class="slash">///</span> AYZA TECH · Case study</div>
+    <h1>AYZA POS</h1>
+    <p class="thesis">
+      A point-of-sale system for Windows that keeps selling when the internet does not.
+      Built for small retail in South Africa and Ethiopia, where a till that needs a
+      connection is a till that stops.
+    </p>
+
+    <dl class="facts">
+      <div class="fact"><dt>Role</dt><dd>Sole developer</dd></div>
+      <div class="fact"><dt>Scope</dt><dd>App, licensing, installer</dd></div>
+      <div class="fact"><dt>Platform</dt><dd>Windows desktop</dd></div>
+      <div class="fact"><dt>Status</dt><dd>Shipped to first shop</dd></div>
+    </dl>
+  </header>
+
+  <hr class="tear">
+
+  <!-- ============ PLATES ============ -->
+
+  <section class="plate">
+    <figure>
+      <img class="shot" src="docs/sales.png" width="1920" height="1080"
+           alt="The AYZA POS till screen: a scan bar, one cart line for a dress at R30.00, and a payment strip showing Total due R30.00, Cash, Card and Amount remaining.">
+      <figcaption>
+        <div class="tag">01 · The till</div>
+        <p class="cap">
+          One row per cart line, so a full basket stays on screen while the cashier works.
+          <strong>Cash and card split on a single line</strong>, with the card field capped at
+          whatever cash has not already covered — a card payment can never produce change,
+          which is the rule a card terminal actually enforces.
+        </p>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="plate">
+    <figure>
+      <img class="shot" src="docs/layby.png" width="1920" height="1080"
+           alt="The New Lay-by screen: a three-step header for Customer, Products and Deposit; a customer and agreement form with collection date presets; and a lay-by summary panel with deposit allocation across cash and card.">
+      <figcaption>
+        <div class="tag">02 · Lay-by</div>
+        <p class="cap">
+          Goods reserved and paid off over weeks — how a large share of clothing and
+          furniture is actually bought here. The deposit is <strong>allocated across cash and
+          card</strong> and measured against the reserved total, and stock is only deducted once
+          the agreement is created, never while the form is still open.
+        </p>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="plate">
+    <figure>
+      <img class="shot" src="docs/history.png" width="1920" height="1080"
+           alt="The Sales History payment breakdown: a table of cash, card and total columns for cash/card sales, sale refunds, exchange payments received, exchange refunds paid, lay-by deposits and lay-by refunds, ending in a net total row.">
+      <figcaption>
+        <div class="tag">03 · Reconciliation</div>
+        <p class="cap">
+          What the owner counts at close. Sales, refunds, exchanges in both directions and
+          lay-by collections are <strong>reconciled per till and per day</strong>, split by cash and
+          card, down to one net total — the number that has to match the cash drawer.
+        </p>
+      </figcaption>
+    </figure>
+  </section>
+
+  <hr class="tear">
+
+  <!-- ============ NOTES ============ -->
+
+  <section>
+    <h2>How it is built</h2>
+
+    <article class="note">
+      <h3>Offline first</h3>
+      <div>
+        <p>
+          Every sale is one atomic SQLite transaction: the sale, its lines, the payment split,
+          the stock deduction and the stock movement all commit together or not at all. There is
+          no network call anywhere on the path between scanning an item and the drawer opening.
+        </p>
+        <p>
+          The database lives in the application support folder, not beside the executable, so a
+          desktop shortcut, a reinstall or an update never separates a shop from its sales.
+        </p>
+      </div>
+    </article>
+
+    <article class="note">
+      <h3>Money</h3>
+      <div>
+        <p>
+          All amounts are handled as integer cents. Floating point never touches a total,
+          a split or a change calculation.
+        </p>
+        <p>
+          Card is capped at <code>total − cash</code>. Cash may overpay and produce change;
+          card may not. The cap is enforced in the UI and again before the sale is written,
+          because the first is a courtesy and the second is the rule.
+        </p>
+      </div>
+    </article>
+
+    <article class="note">
+      <h3>Box pricing</h3>
+      <div>
+        <p>
+          One product sells as a single piece or as a full box, each with its own price, out of
+          one shared stock count. The two live as separate cart lines over the same product, and
+          stock is checked across both before either can grow.
+        </p>
+        <p>
+          At checkout every line is converted back to pieces, with the box saving carried as a
+          discount. Stock, reports and refunds stay on a single unit no matter how it was sold.
+        </p>
+      </div>
+    </article>
+
+    <article class="note">
+      <h3>Printing</h3>
+      <div>
+        <p>
+          Receipts and 50 × 32 mm barcode labels go to Xprinter hardware through raw Win32
+          printing — <code>dart:ffi</code> into <code>winspool.drv</code> — so ESC/POS and TSPL
+          reach the printer as bytes instead of as a rendered page.
+        </p>
+        <p>
+          Printing is deliberately off the critical path. A receipt that fails goes into a queue
+          that survives a restart, and the next customer is served immediately. A printer
+          problem must never hold up a till.
+        </p>
+      </div>
+    </article>
+
+    <article class="note">
+      <h3>Licensing</h3>
+      <div>
+        <p>
+          Lifetime licences are signed offline with Ed25519 and bound to the machine's Windows
+          GUID. The private key never leaves an encrypted vault on the issuing computer; the app
+          ships only public keys and verifies without any server.
+        </p>
+        <p>
+          Keys are additive: a new signing key is added to the app's trusted set rather than
+          replacing the old one, so rotating a key can never lock out a shop that is already
+          running.
+        </p>
+      </div>
+    </article>
+
+    <article class="note">
+      <h3>Who did what</h3>
+      <div>
+        <p>
+          Cashiers, supervisors and the owner see different screens. Refunds, price changes,
+          stock reductions and user management are each gated on a permission, and every sale,
+          removed line and cleared cart is recorded against the signed-in user rather than a
+          generic admin account.
+        </p>
+      </div>
+    </article>
+  </section>
+
+  <hr class="tear">
+
+  <!-- ============ STACK ============ -->
+
+  <section>
+    <h2>Stack</h2>
+    <div class="note" style="border-bottom: 1px solid var(--rule)">
+      <h3>Application</h3>
+      <div>
+        <div class="stack">
+          <span class="chip">Flutter</span><span class="chip">Dart 3</span>
+          <span class="chip">Riverpod</span><span class="chip">SQLite · sqflite_ffi</span>
+          <span class="chip">dart:ffi → Win32</span><span class="chip">pdf / printing</span>
+        </div>
+      </div>
+    </div>
+    <div class="note" style="border-top: 0; border-bottom: 1px solid var(--rule)">
+      <h3>Licence issuer</h3>
+      <div>
+        <div class="stack">
+          <span class="chip">Python</span><span class="chip">Tkinter</span>
+          <span class="chip">Ed25519</span><span class="chip">PKCS#8 encrypted vault</span>
+          <span class="chip">SQLite</span>
+        </div>
+      </div>
+    </div>
+    <div class="note" style="border-top: 0">
+      <h3>Delivery</h3>
+      <div>
+        <div class="stack">
+          <span class="chip">Inno Setup</span><span class="chip">LAN tills</span>
+          <span class="chip">Xprinter XP-360B / XP-420B</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="tear">
+
+  <!-- ============ STATUS ============ -->
+
+  <section>
+    <h2>Where it stands</h2>
+    <ul class="status">
+      <li><span class="mark">Shipped</span><span>Sales, lay-by, refunds, exchanges, inventory, users, reconciliation</span></li>
+      <li><span class="mark">Shipped</span><span>Offline activation, signed installer-ready build, first shop running</span></li>
+      <li><span class="mark open">Next</span><span>Box units printed on the receipt rather than reconciled as a discount</span></li>
+      <li><span class="mark open">Next</span><span>Multi-till testing over LAN against one licensed main computer</span></li>
+    </ul>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+
+  <section class="contact">
+    <h2>Aymen Kedir</h2>
+    <p style="color: var(--ink-2); font-size: 15px; margin: -6px 0 0">
+      Flutter / mobile &amp; desktop developer · Pretoria, South Africa · open to remote work
+    </p>
+    <div class="lines">
+      <div class="row">
+        <span class="k">Email</span>
+        <span class="v" id="email">aymenkedir816@gmail.com</span>
+        <button class="copy" data-copy="email">Copy</button>
+      </div>
+      <div class="row">
+        <span class="k">Work</span>
+        <span class="v" id="work">ayzatech.dev@gmail.com</span>
+        <button class="copy" data-copy="work">Copy</button>
+      </div>
+      <div class="row">
+        <span class="k">LinkedIn</span>
+        <span class="v"><a href="https://www.linkedin.com/in/ayzatechz">linkedin.com/in/ayzatechz</a></span>
+      </div>
+      <div class="row">
+        <span class="k">GitHub</span>
+        <span class="v"><a href="https://github.com/aymenkedir">github.com/aymenkedir</a></span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+document.querySelectorAll('button.copy').forEach(function (button) {
+  button.addEventListener('click', function () {
+    var target = document.getElementById(button.dataset.copy);
+    var text = target.textContent.trim();
+    var done = function () {
+      var was = button.textContent;
+      button.textContent = 'Copied';
+      setTimeout(function () { button.textContent = was; }, 1400);
+    };
+    // Clipboard access is refused in some app views; selecting the text is
+    // the fallback that always leaves the reader able to copy it themselves.
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { select(target); });
+    } else {
+      select(target);
+    }
+  });
+});
+function select(node) {
+  var range = document.createRange();
+  range.selectNodeContents(node);
+  var selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+</script>
